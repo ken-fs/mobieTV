@@ -1,0 +1,130 @@
+// 全局变量定义
+
+// 背景渐变色
+@background-gradient: linear-gradient( 225deg, #101855 0%, #060E2D 100%);
+
+// 主题色彩
+@primary-color: #33CA9E;
+@primary-light: rgba(51, 202, 158, 0.1);
+@primary-shadow: rgba(51, 202, 158, 0.3);
+
+// 文字颜色
+@text-white: #ffffff;
+@text-white-50: rgba(255, 255, 255, 0.5);
+@text-white-70: rgba(255, 255, 255, 0.7);
+@text-white-80: rgba(255, 255, 255, 0.8);
+
+// 卡片样式
+@card-bg: rgba(255, 255, 255, 0.1);
+@card-bg-hover: rgba(255, 255, 255, 0.15);
+@card-border-radius: 20px;
+@card-small-radius: 20px;
+
+// 侧边栏样式
+@sidebar-item-radius: 999px;
+
+// 毛玻璃效果
+@backdrop-blur: blur(10px);
+
+// 动画时间
+@transition-normal: all 0.3s ease;
+@transition-fast: all 0.2s ease;
+
+// 阴影
+@shadow-normal: 0 8px 25px rgba(0, 0, 0, 0.15);
+@shadow-hover: 0 12px 35px rgba(0, 0, 0, 0.2);
+@shadow-primary: 0 0 16px 4px rgba(51, 202, 158, 0.6);
+
+// 滚动条样式变量
+@scrollbar-width-small: 4px;
+@scrollbar-width-normal: 6px;
+@scrollbar-width-large: 8px;
+@scrollbar-track-bg: rgba(255, 255, 255, 0.05);
+@scrollbar-track-bg-hover: rgba(255, 255, 255, 0.1);
+@scrollbar-thumb-bg: rgba(255, 255, 255, 0.2);
+@scrollbar-thumb-bg-hover: rgba(255, 255, 255, 0.4);
+@scrollbar-thumb-bg-active: @primary-color;
+@scrollbar-border-radius: 4px;
+
+// 滚动条mixins
+.scrollbar-base(@width: @scrollbar-width-normal) {
+  scrollbar-width: thin;
+  scrollbar-color: @scrollbar-thumb-bg @scrollbar-track-bg;
+
+  &::-webkit-scrollbar {
+    width: @width;
+    height: @width;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: @scrollbar-track-bg;
+    border-radius: @scrollbar-border-radius;
+    transition: @transition-fast;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: @scrollbar-thumb-bg;
+    border-radius: @scrollbar-border-radius;
+    transition: @transition-fast;
+    
+    &:hover {
+      background: @scrollbar-thumb-bg-hover;
+    }
+    
+    &:active {
+      background: @scrollbar-thumb-bg-active;
+    }
+  }
+
+  &:hover::-webkit-scrollbar-track {
+    background: @scrollbar-track-bg-hover;
+  }
+}
+
+.scrollbar-thin() {
+  .scrollbar-base(@scrollbar-width-small);
+}
+
+.scrollbar-normal() {
+  .scrollbar-base(@scrollbar-width-normal);
+}
+
+.scrollbar-thick() {
+  .scrollbar-base(@scrollbar-width-large);
+}
+
+.scrollbar-hidden() {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+// 断点
+@mobile: 480px;
+@tablet: 768px;
+@desktop: 1024px;
+
+// 通用组件mixins
+.flex-center() {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.card-base() {
+  background: @card-bg;
+  border: 2px solid transparent;
+  border-radius: @card-border-radius;
+  transition: @transition-normal;
+  backdrop-filter: @backdrop-blur;
+  overflow: hidden;
+}
+
+.text-ellipsis() {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

@@ -1,0 +1,135 @@
+.search_keyboard{
+  width: 634px;
+  height: 100vh;
+  padding-left: 64px;
+  padding-right: 48px;
+  background-color: transparent;
+  position: relative;
+}
+.search_keyboard_bg {
+  width: 634px;
+  height: 100vh;
+  position: absolute;
+  left: 0;
+  top: 0;
+  background-color: transparent;
+}
+.search_keyboard_input_root{
+  margin-top: 106px;
+  margin-left: 2px;
+  margin-right: 2px;
+  margin-bottom: 24px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  height: 60px; 
+  background: rgba(255,255,255,0.12);
+  border-radius: 999px 999px 999px 999px;
+}
+.search_keyboard_search_icon{
+  width: 20px;
+  height: 20px;
+  margin-right: 8px;
+  margin-left: 24px;
+  background-color: transparent;
+}
+.search_keyboard_input_text{
+  margin-left: 24px;
+  /* width: 500px; */
+  height: 36px;
+  font-size: 26px;
+  flex: 1;
+  color: white;
+  background: transparent;
+  border: none;
+  outline: none;
+}
+.search_keyboard_input_text::placeholder {
+  color: rgba(255,255,255,0.5);
+}
+.search_keyboard_search_line{
+  height: 2px;
+  background-color: rgba(255, 255, 255, .2);
+  margin-top: 18px;
+  border-radius: 1px;
+}
+
+.search_keyboard_input_option_btns {
+  padding-top: 24px;
+  padding-bottom: 40px;
+  display: flex;
+  flex-direction: row;
+  text-align: center;
+  justify-content: center;
+}
+.search_keyboard_option_btn {
+  width: 128px;
+  height: 50px;
+  border-radius: 99px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  text-align: center;
+  align-items: center;
+  background-color: rgba(255,255,255,0.2);
+}
+.search_keyboard_option_btn.focused {
+  background-color: rgba(255,255,255,1);
+}
+
+.search_keyboard_option_btn .delete_btn_icon{
+  width: 32px;
+  height: 32px;
+  position: absolute;
+}
+.search_keyboard_option_btn .btn_text{
+  color: rgba(255, 255, 255, .5);
+  margin-left: 8px;
+  /* width: 70px; */
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.search_keyboard_option_btn.focused .btn_text {
+  color: rgba(0, 0, 0, 1);
+}
+
+/* 修改搜索键盘列表，使其能够正确显示所有字母 */
+.search_keyboard_list {
+  width: 376px;
+  height: auto;
+  min-height: 376px;
+  background-color: transparent;
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 0;
+}
+.search_keyboard_item{
+  width: 56px;
+  height: 56px;
+  background-color: transparent;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  outline: none;
+  cursor: pointer;
+}
+.search_keyboard_item.focused {
+  background-color: #33CA9E;
+}
+.search_keyboard_item_text{
+  width: 56px;
+  height: 56px;
+  color: #fff;
+  font-size: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+}
+.search_keyboard_item_text.focused {
+  color: rgba(0, 0, 0, 1);
+}
+

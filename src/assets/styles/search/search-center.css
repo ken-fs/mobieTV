@@ -1,0 +1,112 @@
+.search_center{
+  height: 100vh; /* 修改为视口高度 */
+  flex-direction: column;
+  background-color: transparent;
+  overflow: hidden; /* 防止容器溢出 */
+  flex: 1;
+}
+.search_center_view_line{
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background-color: rgba(255, 255, 255, .1);
+}
+
+.search_center_view_top {
+  margin-top: 100px;
+  font-size: 32px;
+  flex-direction: row;
+  align-items: center;
+  background-color: transparent;
+}
+.search_center_view_title{
+  width: 200px;
+  height: 50px;
+  color: #fff;
+  background-color: transparent;
+}
+.search_center_clear_history_btn {
+  width: 125px;
+  height: 50px;
+  background-color: rgba(255,255,255,0.1);
+  focus-background-color: rgba(255,255,255,1);
+  flex-direction: row;
+  justify-content: center;
+  text-align: center;
+  align-items: center;
+  border-radius: 99px;
+  position: absolute;
+  right: 24px;
+}
+
+.search_center_clear_history_btn .btn_clear_text{
+  width: 60px;
+  height: 50px;
+  margin-left: 6px;
+  color: rgba(255, 255, 255, .5);
+  focus-color: rgba(0, 0, 0, 1);
+}
+
+
+.search_center_view_list{
+  flex: 1;
+  max-height: calc(100vh - 200px); /* 计算剩余高度，确保不超出视口 */
+  background-color: transparent;
+  overflow: auto; 
+  display: flex;
+  position: relative;
+  margin-top: 32px;
+}
+.empty_text_box{
+  margin-left: 82px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  width: 100%;
+  margin: 80px 0;
+}
+.empty_text_box .empty_text{
+  font-size: 20px;
+  color: rgba(255,255,255,0.6);
+  margin-top: 32px;
+  /* width: 400px;
+  height: 40px; */
+}
+.list_view{
+  height: 100%; /* 修改为100%，跟随父容器高度 */
+  background-color: transparent;
+}
+.search_center_item{
+  height: 84px;
+  padding-left: 82px;
+  flex-direction: row;
+  align-items: center;
+  background-color: transparent;
+  focus-background-color: #f5f5f5;
+  border-radius: 8px;
+}
+
+.search_center_item_spot {
+  width: 6px;
+  height: 6px;
+  border-radius: 6px;
+  background-color: pink;
+  margin-right: 20px;
+  focus-background-color: black;
+  select-background-color: #FC1103;
+}
+
+.search_center_item_text{
+  margin-right: 28px;
+  width: 350px;
+  height: 84px;
+  color: rgba(255, 255, 255, .5);
+  focus-color:rgba(0, 0, 0, 1);
+  select-color: rgba(255, 255, 255, 1);
+  background-color: transparent;
+}
+

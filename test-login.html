@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>登录功能测试页面 - MobieTV</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+            background: linear-gradient(135deg, #101855 0%, #060E2D 100%);
+            color: #fff;
+            min-height: 100vh;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 30px;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            border: 2px solid transparent;
+        }
+        h1 {
+            color: #33CA9E;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .status {
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 10px;
+            font-weight: bold;
+        }
+        .status.success {
+            background: rgba(51, 202, 158, 0.2);
+            border: 1px solid #33CA9E;
+            color: #33CA9E;
+        }
+        .status.error {
+            background: rgba(255, 107, 107, 0.2);
+            border: 1px solid #ff6b6b;
+            color: #ff6b6b;
+        }
+        .test-accounts {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+        }
+        .test-account {
+            margin: 10px 0;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+        }
+        .button {
+            display: inline-block;
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #33CA9E, #4ECDC4);
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 20px 6px rgba(51, 202, 158, 0.3);
+        }
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+        .feature {
+            background: rgba(255, 255, 255, 0.08);
+            padding: 20px;
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .feature h3 {
+            color: #33CA9E;
+            margin-top: 0;
+        }
+        ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+        li {
+            margin: 8px 0;
+            padding-left: 20px;
+            position: relative;
+        }
+        li:before {
+            content: "✅";
+            position: absolute;
+            left: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔐 MobieTV 登录功能测试</h1>
+        
+        <div class="status success">
+            ✅ 登录功能已完成开发并可以测试
+        </div>
+
+        <div class="test-accounts">
+            <h3>📱 测试账户</h3>
+            <p>使用以下任一账户进行登录测试：</p>
+            <div class="test-account">
+                <strong>管理员账户：</strong> admin / 123456
+            </div>
+            <div class="test-account">
+                <strong>普通用户：</strong> user / 123456  
+            </div>
+            <div class="test-account">
+                <strong>测试账户：</strong> test / 123456
+            </div>
+        </div>
+
+        <div style="text-align: center; margin: 30px 0;">
+            <a href="http://localhost:5174" class="button">🚀 开始测试登录</a>
+            <a href="http://localhost:5174/login" class="button">📱 直接访问登录页</a>
+        </div>
+
+        <div class="features">
+            <div class="feature">
+                <h3>🎨 界面特性</h3>
+                <ul>
+                    <li>Glass morphism 设计</li>
+                    <li>响应式布局</li>
+                    <li>流畅动画效果</li>
+                    <li>大屏幕适配 (1280x720)</li>
+                    <li>移动设备支持</li>
+                </ul>
+            </div>
+            
+            <div class="feature">
+                <h3>🔒 功能特性</h3>
+                <ul>
+                    <li>表单验证</li>
+                    <li>记住用户名</li>
+                    <li>错误提示</li>
+                    <li>加载状态显示</li>
+                    <li>自动重定向</li>
+                </ul>
+            </div>
+            
+            <div class="feature">
+                <h3>🛡️ 安全特性</h3>
+                <ul>
+                    <li>JWT Token 认证</li>
+                    <li>路由权限守卫</li>
+                    <li>Token 自动刷新</li>
+                    <li>安全的登出</li>
+                    <li>状态持久化</li>
+                </ul>
+            </div>
+            
+            <div class="feature">
+                <h3>⚡ 技术架构</h3>
+                <ul>
+                    <li>Vue 3 + TypeScript</li>
+                    <li>Pinia 状态管理</li>
+                    <li>Vant UI 组件</li>
+                    <li>函数式编程</li>
+                    <li>模拟 API 支持</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="status success">
+            <h3>📋 测试步骤</h3>
+            <ol style="text-align: left; padding-left: 20px;">
+                <li>点击上方"开始测试登录"按钮</li>
+                <li>系统会自动重定向到登录页面（因为未登录）</li>
+                <li>输入任一测试账户的用户名和密码</li>
+                <li>点击"登录"按钮，观察登录流程</li>
+                <li>登录成功后会跳转到首页</li>
+                <li>访问个人中心查看用户信息和退出功能</li>
+                <li>测试退出登录功能</li>
+            </ol>
+        </div>
+
+        <div style="text-align: center; margin-top: 40px; opacity: 0.8; font-size: 14px;">
+            <p>🌟 MobieTV - 现代化的教育视频平台</p>
+            <p>开发服务器：http://localhost:5174</p>
+        </div>
+    </div>
+
+    <script>
+        // 检查开发服务器状态
+        fetch('http://localhost:5174')
+            .then(response => {
+                if (response.ok) {
+                    console.log('✅ 开发服务器运行正常');
+                } else {
+                    console.warn('⚠️ 开发服务器响应异常');
+                }
+            })
+            .catch(error => {
+                console.error('❌ 无法连接到开发服务器:', error);
+                document.body.insertAdjacentHTML('afterbegin', 
+                    '<div class="status error">❌ 警告：无法连接到开发服务器 (http://localhost:5174)</div>'
+                );
+            });
+    </script>
+</body>
+</html>
