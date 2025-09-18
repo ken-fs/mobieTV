@@ -334,7 +334,7 @@ const handleSubmit = async (): Promise<void> => {
     const success = await authStore.login({
       // ...loginParams,
       password: "Abc123456.",
-      phone: "15916517686",
+      phone: "18718543551",
       ...authStore.appConfig,
     });
 
