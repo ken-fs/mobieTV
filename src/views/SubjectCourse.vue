@@ -2,6 +2,7 @@
   <div class="subject-course-page" :style="pageBackgroundStyle">
     <Loading :visible="isLoading" text="加载中..." />
 
+    <!-- 顶部标题区域 -->
     <header class="header-section">
       <button type="button" class="back-btn" @click="goBack">
         <van-icon name="arrow-left" size="20" />
@@ -13,6 +14,7 @@
     </header>
 
     <main v-if="!isLoading" class="main-content" :class="mainContentClass">
+      <!-- 左侧筛选栏 -->
       <aside v-if="filterTabs.length > 0" class="filters">
         <button
           v-for="(tab, index) in filterTabs"
@@ -24,7 +26,9 @@
         </button>
       </aside>
 
+      <!-- 课程列表区域 -->
       <section class="course-panel">
+        <!-- 错误提示 -->
         <div v-if="hasError" class="state-block error">
           <van-icon name="warning-o" size="60" />
           <p>加载失败，请重试</p>
@@ -34,6 +38,7 @@
         </div>
 
         <template v-else>
+          <!-- 课程卡片网格 -->
           <div v-if="courseList.length > 0" class="course-grid">
             <article
               v-for="course in courseList"
@@ -69,6 +74,7 @@
             </article>
           </div>
 
+          <!-- 空状态 -->
           <div v-else class="state-block empty">
             <van-icon name="warning-o" size="60" />
             <p>暂无课程数据</p>
@@ -123,12 +129,16 @@ interface ImageState {
   attempts: number;
 }
 
+// 路由与全局依赖
 const route = useRoute();
 const router = useRouter();
+
+// 全局 store 与工具
 const authStore = useAuthStore();
 const { getUserInfo } = useUserInfo();
 const { defaultImage, getCourseImageSrc } = useImageLoader();
 
+// 页面核心状态
 const isLoading = ref(false);
 const hasError = ref(false);
 const filterTabs = ref<FilterTab[]>([]);
@@ -136,9 +146,11 @@ const activeFilterIndex = ref(0);
 const courseList = ref<CourseItem[]>([]);
 const subjectDetail = ref<SubjectDetail | null>(null);
 
+// 用于绘制和并发控制的内部状态
 const imageStates = ref<Map<string, ImageState>>(new Map());
 const latestRequestKey = ref("");
 
+// 计算当前专题与筛选
 const subjectId = computed(() =>
   route.params.id ? String(route.params.id) : "",
 );
@@ -146,6 +158,7 @@ const activeFilter = computed(
   () => filterTabs.value[activeFilterIndex.value] ?? null,
 );
 
+// 页面展示相关的派生数据
 const pageTitle = computed(() => subjectDetail.value?.title ?? "专项突破");
 const pageSubtitle = computed(() => subjectDetail.value?.subtitle ?? "");
 const pageBackgroundStyle = computed(() =>
@@ -155,6 +168,7 @@ const mainContentClass = computed(() => {
   return filterTabs.value.length === 0 ? ["no-filters"] : [];
 });
 
+// 模板样式辅助
 const filterButtonClass = (index: number) => [
   "filter-option",
   { active: index === activeFilterIndex.value },
@@ -164,6 +178,7 @@ const imageClass = (courseId: string) => ({
   hidden: getImageState(courseId).loading,
 });
 
+// 统一构造页面背景样式
 function createBackgroundStyle(subject: SubjectDetail | null) {
   const gradient =
     "linear-gradient(135deg, #8E7CC3 0%, #B794F6 50%, #D6BCFA 100%)";
@@ -186,6 +201,7 @@ function createBackgroundStyle(subject: SubjectDetail | null) {
   };
 }
 
+// 维护课程图片的加载状态
 const ensureImageState = (courseId: string): ImageState => {
   if (!imageStates.value.has(courseId)) {
     imageStates.value.set(courseId, {
@@ -203,6 +219,7 @@ const resetImageStates = () => {
   imageStates.value.clear();
 };
 
+// 图片加载失败时切换备用资源
 const handleCourseImageError = (event: Event, course: CourseItem) => {
   const img = event.target as HTMLImageElement;
   const state = ensureImageState(course.id);
@@ -219,16 +236,19 @@ const handleCourseImageError = (event: Event, course: CourseItem) => {
   img.src = defaultImage.value;
 };
 
+// 图片加载完成后标记成功状态
 const handleCourseImageLoad = (course: CourseItem) => {
   const state = ensureImageState(course.id);
   state.loading = false;
   state.error = false;
 };
 
+// 返回上一页
 const goBack = () => {
   router.back();
 };
 
+// 跳转到课程详情
 const handleCourseClick = (course: CourseItem) => {
   router.push({
     name: "videoDetail",
@@ -236,6 +256,7 @@ const handleCourseClick = (course: CourseItem) => {
   });
 };
 
+// 组装请求参数
 const buildRequestParams = (id: string) => {
   const userInfo = getUserInfo();
   const params: Record<string, unknown> = {
@@ -251,6 +272,7 @@ const buildRequestParams = (id: string) => {
   return params;
 };
 
+// 清洗接口返回结构
 const normalizeResponse = (payload: unknown) => {
   const data = payload as {
     course_list?: { data?: FilterTab[] };
@@ -269,6 +291,7 @@ const normalizeResponse = (payload: unknown) => {
   return { filters, courses, subject };
 };
 
+// 根据返回数据修正当前选中筛选
 const resolveActiveFilterIndex = (
   filters: FilterTab[],
   preferredId: string | null,
@@ -284,6 +307,7 @@ const resolveActiveFilterIndex = (
   return filters[previousIndex] ? previousIndex : 0;
 };
 
+// 请求课程列表（含并发保护）
 const refreshCourses = async () => {
   const id = subjectId.value;
   if (!id) {
@@ -334,6 +358,7 @@ const refreshCourses = async () => {
   }
 };
 
+// 切换筛选标签
 const handleFilterChange = (index: number) => {
   if (index === activeFilterIndex.value) return;
 
@@ -341,6 +366,7 @@ const handleFilterChange = (index: number) => {
   refreshCourses();
 };
 
+// 路由变化时重新拉取数据
 watch(
   subjectId,
   () => {
@@ -618,4 +644,3 @@ watch(
   }
 }
 </style>
-
