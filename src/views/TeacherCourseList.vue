@@ -53,6 +53,7 @@ import FilterPanel from '@/components/common/FilterPanel.vue'
 // 导入学习相关的 store
 import { useLearningStore } from "@/stores/learning"
 import { useAuthStore } from "@/stores/auth"
+import { apiService } from "@/http/api";
 
 const router = useRouter()
 const route = useRoute()
@@ -95,35 +96,63 @@ onMounted(async () => {
   await loadCourses()
 })
 
+// ============================================================================
+// 工具函数 - 从Cookie中获取access_token
+// ============================================================================
+/**
+ * 从Cookie中获取指定名称的值
+ * @param name Cookie名称
+ * @returns Cookie值或空字符串
+ */
+const getCookie = (name: string): string => {
+  const cookieValue = document.cookie
+    .split('; ')
+    .find(row => row.startsWith(`${name}=`))
+    ?.split('=')[1];
+  
+  return cookieValue || '';
+};
+
+// ============================================================================
 // 加载筛选数据
+// ============================================================================
 const loadFilterData = async () => {
   try {
     // 显示加载状态
     isLoading.value = true
     const selectedStage = localStorage.getItem('selectedStage') || ''
     const stageId = STAGE_MAP[selectedStage as keyof typeof STAGE_MAP];
-    // 调用API获取标签列表
-    const success = await learningStore.fetchTagList({
-      ...authStore.appConfig,
-      xueduan_id:stageId
-    })
     
+    // 从Cookie中获取access_token
+    const accessToken = getCookie('access_token');
+    
+    // 调用API获取标签列表 - 添加token参数
+    const response = await apiService.getTagList({
+      ...authStore.appConfig,
+      xueduan_id: stageId,
+      module_id: "98",
+      uid: authStore.userInfo.id,
+      token: accessToken,
+      check_token: 0,
+      app_version_code:0
+    });
+
     // 如果获取成功，处理返回的数据
-    if (success && learningStore.tagList) {
-      // 处理年级数据
-      if (learningStore.tagList.grades && learningStore.tagList.grades.length > 0) {
-        // 添加"全部"选项，并合并API返回的年级数据
-        grades.value = ['全部', ...learningStore.tagList.grades.map(g => g.name)]
-      }
+    // if (response && learningStore.tagList) {
+    //   // 处理年级数据
+    //   if (learningStore.tagList.grades && learningStore.tagList.grades.length > 0) {
+    //     // 添加"全部"选项，并合并API返回的年级数据
+    //     grades.value = ['全部', ...learningStore.tagList.grades.map(g => g.name)]
+    //   }
       
-      // 处理学科/教材数据
-      if (learningStore.tagList.subjects && learningStore.tagList.subjects.length > 0) {
-        // 添加"全部"选项，并合并API返回的学科数据
-        textbooks.value = ['全部', ...learningStore.tagList.subjects.map(s => s.name)]
-      }
+    //   // 处理学科/教材数据
+    //   if (learningStore.tagList.subjects && learningStore.tagList.subjects.length > 0) {
+    //     // 添加"全部"选项，并合并API返回的学科数据
+    //     textbooks.value = ['全部', ...learningStore.tagList.subjects.map(s => s.name)]
+    //   }
       
-      // 可以根据实际返回的数据结构添加更多的处理逻辑
-    }
+    //   // 可以根据实际返回的数据结构添加更多的处理逻辑
+    // }
   } catch (error) {
     console.error('加载筛选数据失败:', error)
     // 发生错误时使用默认数据

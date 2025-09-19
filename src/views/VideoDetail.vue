@@ -9,8 +9,7 @@
           <van-icon name="arrow-left" size="18" />
         </button>
         <div class="header-text">
-          <p class="series-title">{{ detail.seriesTitle }}</p>
-          <h1 class="main-title">{{ detail.videoTitle }}</h1>
+          <h1 class="main-title">{{ detail.seriesTitle }}</h1>
         </div>
       </header>
 
@@ -211,7 +210,7 @@ interface VideoDetailPageData {
 
 type MaybeVideoDetailApi = {
   getVideoDetail?: (
-    payload: Record<string, unknown>,
+    payload: Record<string, unknown>
   ) => Promise<VideoDetailPageData>;
 };
 
@@ -228,19 +227,19 @@ const activeLessonId = ref<string | null>(null);
 const descriptionExpanded = ref(false);
 
 const videoId = computed(() =>
-  route.params.id ? String(route.params.id) : "",
+  route.params.id ? String(route.params.id) : ""
 );
 
 const metaItems = computed(() => detail.value?.stats ?? []);
 const activeLessons = computed(
-  () => detail.value?.chapters?.[activeChapterIndex.value]?.lessons ?? [],
+  () => detail.value?.chapters?.[activeChapterIndex.value]?.lessons ?? []
 );
 const totalLessonCount = computed(
   () =>
     detail.value?.chapters.reduce(
       (acc, group) => acc + group.lessons.length,
-      0,
-    ) ?? 0,
+      0
+    ) ?? 0
 );
 const coverImageStyle = computed(() => {
   if (!detail.value) return {};
@@ -254,11 +253,14 @@ const teacherAvatarStyle = computed(() => {
     backgroundImage: `url(${detail.value.teacher.avatar})`,
   };
 });
-const pageBackgroundStyle = computed(() => ({
-  background:
-    detail.value?.background ??
-    "linear-gradient(135deg, #111C61 0%, #070C3A 45%, #020413 100%)",
-}));
+const pageBackgroundStyle = computed(() => {
+  if (detail.value?.background) {
+    return {
+      background: detail.value.background,
+    };
+  }
+  return {};
+});
 
 const toggleDescription = () => {
   descriptionExpanded.value = !descriptionExpanded.value;
@@ -354,7 +356,7 @@ const buildMockVideoDetail = (id: string): VideoDetailPageData => {
           template.titles[index] ?? template.titles[template.titles.length - 1],
         duration: `${8 + (index % 3)}:${20 + (index % 4) * 5}`,
       })),
-    }),
+    })
   );
 
   const teacherCourses: CourseCard[] = Array.from(
@@ -363,7 +365,7 @@ const buildMockVideoDetail = (id: string): VideoDetailPageData => {
       id: `${id}-teacher-course-${index}`,
       title: "学美语双节棍短文篇",
       cover: "https://dummyimage.com/132x176/FFCC66/354059&text=Course",
-    }),
+    })
   );
 
   const recommendations: CourseCard[] = Array.from(
@@ -372,7 +374,7 @@ const buildMockVideoDetail = (id: string): VideoDetailPageData => {
       id: `${id}-recommend-${index}`,
       title: "纸间动物世界",
       cover: "https://dummyimage.com/168x208/FFDB6E/273151&text=Hot",
-    }),
+    })
   );
 
   return {
@@ -435,10 +437,14 @@ watch(videoId, (nextId, prevId) => {
 
 .video-detail-page {
   min-height: 100vh;
-  background: linear-gradient(135deg, #111c61 0%, #070c3a 45%, #020413 100%);
+  height: 100vh;
+  height: 100dvh;
+  background: @background-gradient;
   color: @text-white;
   padding: 32px 24px 64px;
   box-sizing: border-box;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .video-detail-container {

@@ -135,6 +135,11 @@
 <script setup lang="ts">
 import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
 import CustomSwipe from "@/components/common/CustomSwipe.vue";
+import { useAutoPageEducation } from "@/composable/useAutoPageEducation";
+
+// 导入 composable 并解构需要的函数
+const { handleContentClick } = useAutoPageEducation();
+
 // ============================================================================
 // 类型定义
 // ============================================================================
@@ -439,61 +444,68 @@ const dataId = computed<string>(() => {
 /**
  * 处理内容项点击 - 根据type进行不同的处理
  */
-const handleContentClick = (item: ContentItem): void => {
-  if (isContentDisabled(item)) {
-    console.warn('该课程已下架')
-    return
-  }
+// const handleContentClick = (item: ContentItem): void => {
+//   if (isContentDisabled(item)) {
+//     console.warn('该课程已下架')
+//     return
+//   }
   
-  // 根据type进行不同处理
-  const { type, element_content: content } = item
+//   // 根据type进行不同处理
+//   const { type, element_content: content } = item
   
-  switch (type) {
-    case 1: // 课程
-      if (content) {
-        const courseType = content.format_id === 1 ? 'video' : 'audio'
-        console.log(`跳转到${courseType}课程: ${content.id}`)
-        emit('click-callback', { ...item, courseType, action: 'course' })
-      }
-      break
+//   switch (type) {
+//     case 1: // 课程
+//       if (content) {
+//         const courseType = content.format_id === 1 ? 'video' : 'audio'
+//         console.log(`跳转到${courseType}课程: ${content.id}`)
+//         emit('click-callback', { ...item, courseType, action: 'course' })
+//       }
+//       break
       
-    case 2: // 专题
-      if (content) {
-        console.log(`跳转到专题: ${content.id}`)
-        emit('click-callback', { ...item, action: 'subject' })
-      }
-      break
+//     case 2: // 专题
+//       if (content) {
+//         console.log(`跳转到专题: ${content.id}`)
+//         emit('click-callback', { ...item, action: 'subject' })
+//       }
+//       break
       
-    case 3: // 链接
-      if (item.link_url) {
-        const url = item.link_url.trim()
-        if (/^(https?:)?\/\//i.test(url)) {
-          window.location.href = url
-        } else {
-          emit('click-callback', { ...item, action: 'link', url })
-        }
-      }
-      break
+//     case 3: // 链接
+//       if (item.link_url) {
+//         const url = item.link_url.trim()
+//         if (/^(https?:)?\/\//i.test(url)) {
+//           window.location.href = url
+//         } else {
+//           emit('click-callback', { ...item, action: 'link', url })
+//         }
+//       }
+//       break
+    
+//     case 4: // 同步名师课堂
+//       if (content) {
+//         console.log(`跳转到同步名师课堂: ${content.id}`)
+//         emit('click-callback', { ...item, action: 'synchronize-teacher' })
+//       }
+//       break
+
+//     case 7: // 教师
+//       if (content) {
+//         console.log(`跳转到教师详情: ${content.id}`)
+//         emit('click-callback', { ...item, action: 'teacher' })
+//       }
+//       break
       
-    case 7: // 教师
-      if (content) {
-        console.log(`跳转到教师详情: ${content.id}`)
-        emit('click-callback', { ...item, action: 'teacher' })
-      }
-      break
+//     case 8: // 自然观察类型 (type=4中的大横幅可能是这种类型)
+//       if (content) {
+//         console.log(`跳转到自然观察: ${content.id}`)
+//         emit('click-callback', { ...item, action: 'nature-observation' })
+//       }
+//       break
       
-    case 8: // 自然观察类型 (type=4中的大横幅可能是这种类型)
-      if (content) {
-        console.log(`跳转到自然观察: ${content.id}`)
-        emit('click-callback', { ...item, action: 'nature-observation' })
-      }
-      break
-      
-    default:
-      // 默认处理
-      emit('click-callback', item)
-  }
-}
+//     default:
+//       // 默认处理
+//       emit('click-callback', item)
+//   }
+// }
 
 /**
  * 处理收藏操作

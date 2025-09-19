@@ -9,7 +9,6 @@
       </button>
       <div class="header-content">
         <h1 class="page-title">{{ pageTitle }}</h1>
-        <p v-if="pageSubtitle" class="page-subtitle">{{ pageSubtitle }}</p>
       </div>
     </header>
 
@@ -56,20 +55,19 @@
                 </div>
                 <img
                   :src="getCourseImageSrc(course)"
-                  :alt="course.title"
-                  @error="handleCourseImageError($event, course)"
+                  :alt="course.bigimg"
                   @load="handleCourseImageLoad(course)"
                   :class="imageClass(course.id)"
                 />
-                <span v-if="course.tag" class="course-tag">{{
+                <!-- <span v-if="course.tag" class="course-tag">{{
                   course.tag
-                }}</span>
+                }}</span> -->
               </div>
               <div class="course-info">
-                <h3 class="course-title">{{ course.title }}</h3>
-                <p v-if="course.lesson_count" class="course-meta">
+                <h3 class="course-title">{{ course.name }}</h3>
+                <!-- <p v-if="course.lesson_count" class="course-meta">
                   {{ course.lesson_count }}课时
-                </p>
+                </p> -->
               </div>
             </article>
           </div>
@@ -107,12 +105,11 @@ interface FilterTab {
 
 interface CourseItem {
   id: string;
-  title: string;
-  cover_image?: string;
-  thumbnail?: string;
+  name: string;
+  bg_img?: string;
+  bigimg?: string;
   tag?: string;
-  lesson_count?: number;
-  description?: string;
+  remark?: string;
   video_url?: string;
 }
 
@@ -152,17 +149,17 @@ const latestRequestKey = ref("");
 
 // 计算当前专题与筛选
 const subjectId = computed(() =>
-  route.params.id ? String(route.params.id) : "",
+  route.params.id ? String(route.params.id) : ""
 );
 const activeFilter = computed(
-  () => filterTabs.value[activeFilterIndex.value] ?? null,
+  () => filterTabs.value[activeFilterIndex.value] ?? null
 );
 
 // 页面展示相关的派生数据
-const pageTitle = computed(() => subjectDetail.value?.title ?? "专项突破");
+const pageTitle = ref("");
 const pageSubtitle = computed(() => subjectDetail.value?.subtitle ?? "");
 const pageBackgroundStyle = computed(() =>
-  createBackgroundStyle(subjectDetail.value),
+  createBackgroundStyle(subjectDetail.value)
 );
 const mainContentClass = computed(() => {
   return filterTabs.value.length === 0 ? ["no-filters"] : [];
@@ -186,7 +183,6 @@ function createBackgroundStyle(subject: SubjectDetail | null) {
   if (subject?.background) {
     return {
       backgroundImage: `url(${subject.background}), ${gradient}`,
-      backgroundBlendMode: "overlay",
     };
   }
 
@@ -220,21 +216,21 @@ const resetImageStates = () => {
 };
 
 // 图片加载失败时切换备用资源
-const handleCourseImageError = (event: Event, course: CourseItem) => {
-  const img = event.target as HTMLImageElement;
-  const state = ensureImageState(course.id);
+// const handleCourseImageError = (event: Event, course: CourseItem) => {
+//   const img = event.target as HTMLImageElement;
+//   const state = ensureImageState(course.id);
 
-  state.attempts += 1;
+//   state.attempts += 1;
 
-  if (state.attempts < 3 && course.thumbnail && course.thumbnail !== img.src) {
-    img.src = course.thumbnail;
-    return;
-  }
+//   if (state.attempts < 3 && course.thumbnail && course.thumbnail !== img.src) {
+//     img.src = course.thumbnail;
+//     return;
+//   }
 
-  state.loading = false;
-  state.error = true;
-  img.src = defaultImage.value;
-};
+//   state.loading = false;
+//   state.error = true;
+//   img.src = defaultImage.value;
+// };
 
 // 图片加载完成后标记成功状态
 const handleCourseImageLoad = (course: CourseItem) => {
@@ -278,24 +274,26 @@ const normalizeResponse = (payload: unknown) => {
     course_list?: { data?: FilterTab[] };
     layout_content?: CourseItem[];
     subject?: SubjectDetail;
+    name?: string;
   };
 
-  const rawFilters = data?.course_list?.data;
-  const rawCourses = data?.layout_content;
+  const rawFilters = data?.tag_list;
+  const name = data?.name;
+  const rawCourses = data?.course_list?.data;
 
   const filters: FilterTab[] = Array.isArray(rawFilters) ? rawFilters : [];
   const courses: CourseItem[] = Array.isArray(rawCourses) ? rawCourses : [];
 
   const subject: SubjectDetail | null = data?.subject ?? null;
 
-  return { filters, courses, subject };
+  return { filters, courses, subject, name };
 };
 
 // 根据返回数据修正当前选中筛选
 const resolveActiveFilterIndex = (
   filters: FilterTab[],
   preferredId: string | null,
-  previousIndex: number,
+  previousIndex: number
 ) => {
   if (filters.length === 0) return 0;
 
@@ -331,20 +329,21 @@ const refreshCourses = async () => {
   try {
     resetImageStates();
     const response = await apiService.getSubjectCourseList(
-      buildRequestParams(id),
+      buildRequestParams(id)
     );
     if (latestRequestKey.value !== requestKey) return;
 
-    const { filters, courses, subject } = normalizeResponse(response);
+    const { filters, courses, subject, name } = normalizeResponse(response);
 
     filterTabs.value = filters;
     activeFilterIndex.value = resolveActiveFilterIndex(
       filters,
       preferredFilterId,
-      previousIndex,
+      previousIndex
     );
     courseList.value = courses;
     subjectDetail.value = subject;
+    pageTitle.value = name ?? "";
   } catch (error) {
     if (latestRequestKey.value !== requestKey) return;
 
@@ -373,7 +372,7 @@ watch(
     activeFilterIndex.value = 0;
     refreshCourses();
   },
-  { immediate: true },
+  { immediate: true }
 );
 </script>
 
@@ -450,33 +449,43 @@ watch(
 .filters {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  width: 200px;
+  gap: 16px;
+  width: 240px;
   flex-shrink: 0;
+  align-items: flex-start;
 }
 
 .filter-option {
-  padding: 12px 18px;
+  width: 240px;
+  height: 80px;
   border: none;
-  border-radius: 24px;
-  background: rgba(255, 255, 255, 0.18);
-  color: @text-white;
-  font-size: 14px;
+  border-radius: 999px;
+  background: transparent;
+  color: fade(@text-white, 78%);
+  font-size: 18px;
   font-weight: 600;
   cursor: pointer;
   transition: @transition-normal;
   text-align: center;
   backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:focus-visible {
+    outline: 2px solid fade(@primary-color, 60%);
+    outline-offset: 2px;
+  }
 
   &:hover {
-    background: rgba(255, 255, 255, 0.26);
-    transform: translateX(6px);
+    color: @text-white;
+    background: rgba(51, 202, 158, 0.16);
   }
 
   &.active {
-    background: rgba(255, 255, 255, 0.92);
-    color: #333;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+    background: @primary-color;
+    color: @text-white;
+    box-shadow: 0 8px 24px rgba(51, 202, 158, 0.45);
     transform: none;
   }
 }
@@ -621,14 +630,28 @@ watch(
     width: 100%;
     overflow-x: auto;
     padding-bottom: 8px;
+    justify-content: flex-start;
+    gap: 12px;
 
     .filter-option {
       flex-shrink: 0;
+      width: auto;
+      min-width: 160px;
+      height: 56px;
+      padding: 0 24px;
+      font-size: 16px;
       white-space: nowrap;
       transform: none;
+      border-radius: 999px;
 
       &:hover {
         transform: none;
+      }
+
+      &.active {
+        background: @primary-color;
+        color: @text-white;
+        box-shadow: 0 8px 24px rgba(51, 202, 158, 0.35);
       }
     }
   }

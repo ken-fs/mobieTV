@@ -1,7 +1,8 @@
-import { ref, computed } from 'vue';
+import { ref, computed } from "vue";
 
 // 默认图片的base64编码（1x1透明像素）
-const DEFAULT_IMAGE_BASE64 = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjgwIiBoZWlnaHQ9IjE2MCIgdmlld0JveD0iMCAwIDI4MCAxNjAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIyODAiIGhlaWdodD0iMTYwIiBmaWxsPSIjRjVGNUY1Ii8+CjxwYXRoIGQ9Ik0xMjAgODBMMTM2IDk2SDE2NEwxODAgODBMMTk2IDk2SDE2NEwyMDQgMTA0TDE5NiAxMTJIMTY0TDE0NCAxMjhIMTM2TDEyMCAxMTJMOTYgMTI4SDg0TDY4IDExMkw0OCAxMjhIMzZMMjAgMTEyTDAgMTI4SDEyVjk2TDI0IDgwTDM2IDk2SDQ4TDY4IDgwTDg0IDk2SDk2TDEyMCA4MFoiIGZpbGw9IiNERERERkYiLz4KPHBhdGggZD0iTTEwNCA4OEMxMDggODQgMTE2IDg0IDEyMCA4OEMxMjQgOTIgMTI0IDEwMCAxMjAgMTA0QzExNiAxMDggMTA4IDEwOCAxMDQgMTA0QzEwMCAxMDAgMTAwIDkyIDEwNCA4OFoiIGZpbGw9IiNDQ0NDQ0MiLz4KPHRleHQgeD0iMTQwIiB5PSIxMDAiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzk5OTk5OSI+6K++56iL5Zu+54mHPC90ZXh0Pgo8L3N2Zz4=';
+const DEFAULT_IMAGE_BASE64 =
+  "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjgwIiBoZWlnaHQ9IjE2MCIgdmlld0JveD0iMCAwIDI4MCAxNjAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIyODAiIGhlaWdodD0iMTYwIiBmaWxsPSIjRjVGNUY1Ii8+CjxwYXRoIGQ9Ik0xMjAgODBMMTM2IDk2SDE2NEwxODAgODBMMTk2IDk2SDE2NEwyMDQgMTA0TDE5NiAxMTJIMTY0TDE0NCAxMjhIMTM2TDEyMCAxMTJMOTYgMTI4SDg0TDY4IDExMkw0OCAxMjhIMzZMMjAgMTEyTDAgMTI4SDEyVjk2TDI0IDgwTDM2IDk2SDQ4TDY4IDgwTDg0IDk2SDk2TDEyMCA4MFoiIGZpbGw9IiNERERERkYiLz4KPHBhdGggZD0iTTEwNCA4OEMxMDggODQgMTE2IDg0IDEyMCA4OEMxMjQgOTIgMTI0IDEwMCAxMjAgMTA0QzExNiAxMDggMTA4IDEwOCAxMDQgMTA0QzEwMCAxMDAgMTAwIDkyIDEwNCA4OFoiIGZpbGw9IiNDQ0NDQ0MiLz4KPHRleHQgeD0iMTQwIiB5PSIxMDAiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzk5OTk5OSI+6K++56iL5Zu+54mHPC90ZXh0Pgo8L3N2Zz4=";
 
 interface ImageState {
   loading: boolean;
@@ -28,7 +29,7 @@ export function useImageLoader() {
   const preloadImage = (src: string): Promise<string> => {
     return new Promise((resolve, reject) => {
       if (!src || failedImages.has(src)) {
-        reject(new Error('Invalid or previously failed image'));
+        reject(new Error("Invalid or previously failed image"));
         return;
       }
 
@@ -44,7 +45,7 @@ export function useImageLoader() {
       };
       img.onerror = () => {
         failedImages.add(src);
-        reject(new Error('Failed to load image'));
+        reject(new Error("Failed to load image"));
       };
       img.src = src;
     });
@@ -72,7 +73,7 @@ export function useImageLoader() {
 
   // 获取课程图片路径
   const getCourseImageSrc = (course: any): string => {
-    return course?.cover_image || course?.thumbnail || defaultImage.value;
+    return course?.bigimg || course?.bgimg || defaultImage.icon;
   };
 
   // 处理图片加载错误

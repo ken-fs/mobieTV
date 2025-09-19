@@ -25,6 +25,14 @@ export default defineConfig({
   },
   server: {
     proxy: {
+      // 优先匹配特定的 API 路径，指向 https://www.iexue100.com
+      '/api/resource.tag/new_get_tag': {
+        target: 'https://www.iexue100.com',
+        changeOrigin: true,
+        secure: true
+      },
+      
+      // 其他所有 API 请求指向 https://app.iexue.com
       '/api': {
         target: 'https://app.iexue.com',
         changeOrigin: true,

@@ -35,7 +35,7 @@ const API_ENDPOINTS = {
     TEACHER_SEARCH: "/api/login/api/teacherPySearch", // 通过名师搜索课程
     POPULAR_COURSES: "/api/login/api/courseSearchList", //热门课程
     COURSE_SEARCH_ADD: "api/login/api/courseSearchAdd", // 添加课程搜索记录
-    GET_TAG_LIST: "/api/login/api/get_tag_list", // 年级-学科-出版社 联动
+    GET_TAG_LIST: "/api/resource.tag/new_get_tag", // 年级-学科-出版社 联动
   },
   // 视频相关
   VIDEO: {
@@ -43,6 +43,7 @@ const API_ENDPOINTS = {
     DETAIL: "/api/video/detail", // 视频详情
     SEARCH: "/api/search", // 搜索视频
     SUBJECT_COURSE: "/api/login/api/get_subject_course", // 专题课程列表
+    SUBJECT_DETAIL: "/api/resource.subject/get_subject_detail", // 专题课程详情
   },
 } as const;
 
@@ -196,6 +197,15 @@ export const apiService = {
     http.$post(buildApiUrl(API_ENDPOINTS.VIDEO.SUBJECT_COURSE), params),
 
   /**
+   * 获取专题课程详情列表
+   */
+  getSubjectCourseDetail: (params) =>
+    http.$post100(
+      buildApiUrl(API_ENDPOINTS.VIDEO.SUBJECT_DETAIL, "IEXUE100"),
+      params
+    ),
+
+  /**
    * 获取专题分类信息
    */
   getSubjectCategoryInfo: (params: { id: string }) =>
@@ -214,7 +224,7 @@ export const apiService = {
    * 年级-学科-出版社 联动
    */
   getTagList: (params: any) =>
-    http.$post(
+    http.$post100(
       buildApiUrl(API_ENDPOINTS.LEARNING.GET_TAG_LIST, "IEXUE100"),
       params
     ),

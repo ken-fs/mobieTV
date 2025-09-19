@@ -95,13 +95,8 @@ export function useAutoPageEducation() {
   const handleContentClick = (item: any): void => {
     console.log("Content clicked:", item);
 
-    // 检查是否有ID
-    const itemId = item.id || item.course_id || item.video_id;
-
-    if (!itemId) {
-      console.warn("Content item missing id:", item);
-      return;
-    }
+    // 检查是否有content_id
+    const itemId = item.content_id;
 
     try {
       // 判断是否为专题课程
@@ -111,6 +106,11 @@ export function useAutoPageEducation() {
         router.push({
           name: "subjectCourse",
           params: { id: String(itemId) },
+        });
+      } else if (item.type === 4) {
+        // 跳转到视频详情页面
+        router.push({
+          name: "teacherCourseList",
         });
       } else {
         // 跳转到视频详情页面

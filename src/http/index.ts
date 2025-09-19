@@ -4,6 +4,7 @@ import axios, {
   type AxiosRequestConfig,
 } from "axios";
 import rsa from "./rsa";
+import Sign from './sign';
 import { tokenCookies } from "@/utils/cookies";
 
 interface HttpConfig extends AxiosRequestConfig {
@@ -335,6 +336,145 @@ class HttpService {
       console.error(error.msg || "网络错误！");
     }
   }
+
+  // 新增：使用sign.ts加密的POST方法
+  $post100<T = any>(
+    url: string,
+    data?: Record<string, any>,
+    config?: HttpConfig
+  ): Promise<T> {
+    // 设置请求头为application/json
+    const signConfig = { 
+      ...config, 
+      headers: {
+        "Content-Type": "application/json",
+        ...config?.headers,
+      },
+    };
+    
+    // 调用带sign加密的http方法
+    return this.httpWithSign<T>(url, data, signConfig, "post");
+  }
+
+  // 新增：使用sign.ts加密的GET方法
+  $get100<T = any>(
+    url: string,
+    data?: Record<string, any>,
+    config?: HttpConfig
+  ): Promise<T> {
+    // 调用带sign加密的http方法
+    return this.httpWithSign<T>(url, data, config || {}, "get");
+  }
+
+  // 修复：使用sign.ts加密的通用HTTP方法
+// 修复：使用sign.ts加密的通用HTTP方法，基于参考代码重写
+private async httpWithSign<T = any>(
+  url: string,
+  data: Record<string, any> = {},
+  config: HttpConfig = {},
+  method: "get" | "post" = "post"
+): Promise<T> {
+  let params = this.initData(data);
+  const finalConfig = this.initConfig(config);
+  const { loading, resDataKey } = finalConfig;
+
+  try {
+    if (loading) {
+      this.showLoading();
+    }
+
+    // 设置签名参数
+    Sign.setParams(params);
+    let requestData: any;
+    
+    if (method === "post") {
+      // POST 请求处理 - 进行 Sign 加密
+      const encodedData = Sign.encodePost();
+      requestData = JSON.parse(encodedData); // 解析为对象，因为 encodePost 返回的是字符串
+    } else {
+      // GET 请求处理
+      requestData = {
+        params: {
+          ...params,
+          sign: Sign.createSign()
+        }
+      };
+    }
+
+    // 发送请求
+    const response = await this.instance.request({
+      url,
+      method,
+      ...finalConfig,
+      ...(method === 'post' ? { data: requestData } : requestData)
+    });
+
+    if (loading) {
+      this.hideLoading();
+    }
+
+    // 获取响应数据
+    let result = response;
+
+    // 开发环境下打印原始响应
+    if (import.meta.env.DEV) {
+      console.log('Raw response:', result);
+    }
+
+    // 对响应数据进行解密处理
+   if (method === 'post') {
+      try {
+        // 确保传入正确的数据格式
+        const decryptParams = {
+          data: result.data,
+          sign: result.sign || ''
+        };
+        
+        if (import.meta.env.DEV) {
+          console.log('Decrypt params:', decryptParams);
+        }
+        
+        result = Sign.decodePost(decryptParams);
+        
+        // 开发环境下打印解密后的数据
+        if (import.meta.env.DEV) {
+          console.log('Decoded response:', result);
+        }
+      } catch (decryptError) {
+        console.error('解密失败，原始数据:', result);
+        console.error('解密错误:', decryptError);
+        throw new Error('数据解密失败');
+      }
+    }
+
+    // 检查响应是否成功
+    if (this.isSuccessRes(result)) {
+      // 根据 resDataKey 返回数据
+      return resDataKey && result[resDataKey] 
+        ? result[resDataKey] 
+        : result;
+    }
+
+    // 处理业务错误
+    throw result;
+
+  } catch (error: any) {
+    if (loading) {
+      this.hideLoading();
+    }
+    
+    // 错误日志
+    if (import.meta.env.DEV) {
+      console.error('Request failed:', {
+        url,
+        originalData: params,
+        error: error?.response?.data || error.message || error
+      });
+    }
+    
+    throw error;
+  }
+}
 }
 
 export default new HttpService();
