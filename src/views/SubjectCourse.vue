@@ -461,7 +461,8 @@ watch(
   border: none;
   border-radius: 999px;
   background: transparent;
-  color: fade(@text-white, 78%);
+  // 调整未选中文字颜色以提升在浅色背景下的可读性
+  color: rgba(34, 34, 34, 0.9);
   font-size: 18px;
   font-weight: 600;
   cursor: pointer;
